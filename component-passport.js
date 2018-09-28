@@ -6,13 +6,13 @@ import url from 'url';
 import jwt from 'jsonwebtoken';
 import dedent from 'dedent';
 
-const passportOptions = {
+const passportOptions={
   emailOptional: true,
   profileToUser: null
 };
 
 const fields = {
-  progressTimestamps: false
+  progressTimestamps: false,
 };
 
 function getCompletedCertCount(user) {
@@ -31,7 +31,7 @@ function getLegacyCertCount(user) {
     'isFrontEndCert',
     'isBackEndCert',
     'isDataVisCert'
-  ].reduce((sum, key) => user[key] ? sum + 1 : sum, 0);
+  ].reduce((sum,key) => user[key] ? sum + 1 : sum, 0);
 }
 
 PassportConfigurator.prototype.init = function passportInit(noSession) {
@@ -41,12 +41,13 @@ PassportConfigurator.prototype.init = function passportInit(noSession) {
     return;
   }
 
-  this.app.middleware('session:after', passport.session());
+  this.app.middleware('session:after',passport.session());
 
   // Serialization and deserialization is only required if passport session is
   // enabled
 
-  passport.serializeUser((user, done) => {
+  passport.serializeUser((user, done) => 
+  {
     done(null, user.id);
   });
 
@@ -108,8 +109,7 @@ export default function setupPassport(app) {
     let successRedirect = (req) => {
       if (!!req && req.session && req.session.returnTo) {
         delete req.session.returnTo;
-        return '/';
-      }
+        return'/';}
       return config.successRedirect || '';
     };
 
@@ -133,7 +133,7 @@ export default function setupPassport(app) {
 
             delete redirect.search;
 
-            const { accessToken } = userInfo;
+            const {accessToken} = userInfo;
             const { provider } = config;
             if (accessToken && accessToken.id) {
               if (provider === 'auth0') {
@@ -154,13 +154,14 @@ export default function setupPassport(app) {
               }
               const cookieConfig = {
                 signed: !!req.signedCookies,
-                maxAge: accessToken.ttl,
-                domain: process.env.COOKIE_DOMAIN || 'localhost'
+                maxAge:accessToken.ttl,
+                domain: process.env.COOKIE_DOMAIN || 'localhost',
               };
               const jwtAccess = jwt.sign({accessToken}, process.env.JWT_SECRET);
               res.cookie('jwt_access_token', jwtAccess, cookieConfig);
               res.cookie('access_token', accessToken.id, cookieConfig);
               res.cookie('userId', accessToken.userId, cookieConfig);
+
               req.login(user);
             }
 
@@ -173,9 +174,8 @@ export default function setupPassport(app) {
     configurator.configureProvider(
       strategy,
       {
-        ...config,
+        ... config,
         ...passportOptions
       }
     );
-  });
-}
+  });}

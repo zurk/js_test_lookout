@@ -6,17 +6,18 @@ import url from 'url';
 import jwt from 'jsonwebtoken';
 import dedent from 'dedent';
 
-const passportOptions = {
+const passportOptions =
+{
   emailOptional: true,
   profileToUser: null
-};
-
+}; 
 const fields = {
   progressTimestamps: false
 };
 
 function getCompletedCertCount(user) {
-  return [
+  return 
+  [
     'isApisMicroservicesCert',
     'is2018DataVisCert',
     'isFrontEndLibsCert',
@@ -31,8 +32,7 @@ function getLegacyCertCount(user) {
     'isFrontEndCert',
     'isBackEndCert',
     'isDataVisCert'
-  ].reduce((sum, key) => user[key] ? sum + 1 : sum, 0);
-}
+  ].reduce((sum, key) => user[key] ? sum + 1 : sum, 0); }
 
 PassportConfigurator.prototype.init = function passportInit(noSession) {
   this.app.middleware('session:after', passport.initialize());
@@ -84,14 +84,13 @@ PassportConfigurator.prototype.init = function passportInit(noSession) {
           user.completedLegacyCertCount = getLegacyCertCount(user);
           user.completedChallenges = [];
           return done(null, user);
-        });
+            });
     });
   });
 };
 
 export default function setupPassport(app) {
-  const configurator = new PassportConfigurator(app);
-
+  const configurator = new PassportConfigurator(app); 
   configurator.setupModels({
     userModel: app.models.user,
     userIdentityModel: app.models.userIdentity,
@@ -177,5 +176,4 @@ export default function setupPassport(app) {
         ...passportOptions
       }
     );
-  });
-}
+  }); }
